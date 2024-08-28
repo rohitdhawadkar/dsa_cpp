@@ -7,14 +7,9 @@ public:
     int data;
     Node* next;
 
-    Node(int data, Node* next) {
+    Node(int data, Node* next = nullptr) {
         this->data = data;
         this->next = next;
-    }
-
-    Node(int data) {
-        this->data = data;
-        this->next = nullptr;
     }
 };
 
@@ -24,13 +19,14 @@ int countElement(Node* Head);
 void printLL(Node* Head);
 void freeLinkedList(Node* Head);
 int find(Node* Head, int target);
-Node*  RemoveHead(Node* Head);
-Node* deleteKelement(Node* Head,int k);
-Node* InserAtHead(Node* Head,int k);
-Node* InsertAtTail(Node* Head,int k);
+Node* RemoveHead(Node* Head);
+Node* RemoveTail(Node* Head);
+Node* deleteKelement(Node* Head, int k);
+Node* InsertAtHead(Node* Head, int k);
+Node* InsertAtTail(Node* Head, int k);
 
 int main() {
-    int array[] = {5, 10, 15, 23,10,27,90};
+    int array[] = {5, 10, 15, 23, 10, 27, 90};
     Node* H = ConvertArr2LL(array, 7);
 
     cout << "[";
@@ -38,26 +34,25 @@ int main() {
     cout << "]" << endl;
 
     int ans = find(H, 15);
-    cout << ans << endl;
+    cout << "Element found: " << ans << endl;
 
-    deleteKelement(H, 5);
+    H = deleteKelement(H, 5);
+    Node* NewHead = InsertAtHead(H, 89);
+    Node* NewTail = InsertAtTail(NewHead, 99);
 
-    // printLL(H);
-
-    Node* NewHead = InserAtHead(H,89);
-    Node* NewTail = InsertAtTail(NewHead,99);
+    cout << "Modified List: [";
     printLL(NewHead);
+    cout << "]" << endl;
 
-
-
-    freeLinkedList(H);
+    freeLinkedList(NewHead);
 
     return 0;
 }
 
 Node* ConvertArr2LL(int array[], int size) {
     if (size == 0) return nullptr;
-    Node* Head = new Node(array[0], nullptr);
+
+    Node* Head = new Node(array[0]);
     Node* Mover = Head;
 
     for (int i = 1; i < size; i++) {
@@ -72,23 +67,28 @@ Node* ConvertArr2LL(int array[], int size) {
 int countElement(Node* Head) {
     int count = 0;
     Node* temp = Head;
+
     while (temp) {
         temp = temp->next;
         count++;
     }
+
     return count;
 }
 
 void printLL(Node* Head) {
     Node* temp = Head;
+
     while (temp) {
-        cout << temp->data << " ";
+        cout << temp->data;
+        if (temp->next != nullptr) cout << " -> ";
         temp = temp->next;
     }
 }
 
 void freeLinkedList(Node* Head) {
     Node* temp;
+
     while (Head != nullptr) {
         temp = Head;
         Head = Head->next;
@@ -98,17 +98,19 @@ void freeLinkedList(Node* Head) {
 
 int find(Node* Head, int target) {
     Node* temp = Head;
+
     while (temp) {
         if (temp->data == target) {
             return 1;
         }
         temp = temp->next;
     }
+
     return 0;
 }
 
-Node*  RemoveHead(Node* Head){
-    if(Head==NULL || Head->next==NULL)return NULL;
+Node* RemoveHead(Node* Head) {
+    if (Head == nullptr || Head->next == nullptr) return nullptr;
 
     Node* temp = Head;
     Head = Head->next;
@@ -117,72 +119,59 @@ Node*  RemoveHead(Node* Head){
     return Head;
 }
 
-Node* RemoveTail(Node* Head){
-    if(Head==NULL || Head->next==NULL)return NULL;
-    Node* temp = Head;
-    while(temp->next->next!=nullptr){
-        temp = temp->next;
+Node* RemoveTail(Node* Head) {
+    if (Head == nullptr || Head->next == nullptr) return nullptr;
 
+    Node* temp = Head;
+    while (temp->next->next != nullptr) {
+        temp = temp->next;
     }
+
     delete temp->next;
     temp->next = nullptr;
+
     return Head;
 }
 
-Node* deleteKelement(Node* Head,int k){
+Node* deleteKelement(Node* Head, int k) {
+    if (Head == nullptr) return nullptr;
+    if (k == 1) {
+        return RemoveHead(Head);
+    }
 
-    if(Head==NULL) return NULL;
-    if(k==1){
-        Node* temp = Head;
-        Head = Head->next;
+    int count = 1;
+    Node* temp = Head;
+    Node* prev = nullptr;
+
+    while (temp != nullptr && count < k) {
+        prev = temp;
+        temp = temp->next;
+        count++;
+    }
+
+    if (temp != nullptr) {
+        prev->next = temp->next;
         delete temp;
-        return Head;
     }
 
-    int count = 0;
-    Node * Temp = Head;
-   Node* prev = NULL;
-   while(Temp!=NULL){
-       count++;
-       if(count==k){
-           prev->next =  prev->next->next;
-       }
-       prev = Temp;
-       Temp = Temp->next;
-   }
-
-return Head;
-
+    return Head;
 }
 
-Node* InserAtHead(Node* Head,int k){
-    if(Head==NULL){
-        Node* NewHead = new Node(k);
-        return NewHead;
-    }
-
-    // Node * NewHead ;
-    Node * NewHead = new Node(k,Head);
+Node* InsertAtHead(Node* Head, int k) {
+    Node* NewHead = new Node(k, Head);
     return NewHead;
-
 }
-Node* InsertAtTail(Node* Head,int k){
-    if(Head==NULL){
-         Node* NewHead = new Node(k);
-         return NewHead;
+
+Node* InsertAtTail(Node* Head, int k) {
+    if (Head == nullptr) {
+        return new Node(k);
     }
 
-    Node *temp = Head;
-    while(temp->next!=nullptr){
+    Node* temp = Head;
+    while (temp->next != nullptr) {
         temp = temp->next;
     }
 
-    // temp = temp->next;
-
-    Node* NewTail = new Node(k,nullptr);
-    temp->next = NewTail;
-
+    temp->next = new Node(k);
     return Head;
-
-
 }
