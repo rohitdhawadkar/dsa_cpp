@@ -26,6 +26,8 @@ void freeLinkedList(Node* Head);
 int find(Node* Head, int target);
 Node*  RemoveHead(Node* Head);
 Node* deleteKelement(Node* Head,int k);
+Node* InserAtHead(Node* Head,int k);
+Node* InsertAtTail(Node* Head,int k);
 
 int main() {
     int array[] = {5, 10, 15, 23,10,27,90};
@@ -40,7 +42,11 @@ int main() {
 
     deleteKelement(H, 5);
 
-    printLL(H);
+    // printLL(H);
+
+    Node* NewHead = InserAtHead(H,89);
+    Node* NewTail = InsertAtTail(NewHead,99);
+    printLL(NewHead);
 
 
 
@@ -146,5 +152,37 @@ Node* deleteKelement(Node* Head,int k){
    }
 
 return Head;
+
+}
+
+Node* InserAtHead(Node* Head,int k){
+    if(Head==NULL){
+        Node* NewHead = new Node(k);
+        return NewHead;
+    }
+
+    // Node * NewHead ;
+    Node * NewHead = new Node(k,Head);
+    return NewHead;
+
+}
+Node* InsertAtTail(Node* Head,int k){
+    if(Head==NULL){
+         Node* NewHead = new Node(k);
+         return NewHead;
+    }
+
+    Node *temp = Head;
+    while(temp->next!=nullptr){
+        temp = temp->next;
+    }
+
+    // temp = temp->next;
+
+    Node* NewTail = new Node(k,nullptr);
+    temp->next = NewTail;
+
+    return Head;
+
 
 }
