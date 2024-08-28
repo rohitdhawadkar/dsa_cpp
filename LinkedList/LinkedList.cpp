@@ -25,10 +25,11 @@ void printLL(Node* Head);
 void freeLinkedList(Node* Head);
 int find(Node* Head, int target);
 Node*  RemoveHead(Node* Head);
+Node* deleteKelement(Node* Head,int k);
 
 int main() {
-    int array[] = {5, 10, 15, 23};
-    Node* H = ConvertArr2LL(array, 4);
+    int array[] = {5, 10, 15, 23,10,27,90};
+    Node* H = ConvertArr2LL(array, 7);
 
     cout << "[";
     printLL(H);
@@ -36,6 +37,12 @@ int main() {
 
     int ans = find(H, 15);
     cout << ans << endl;
+
+    deleteKelement(H, 5);
+
+    printLL(H);
+
+
 
     freeLinkedList(H);
 
@@ -114,4 +121,30 @@ Node* RemoveTail(Node* Head){
     delete temp->next;
     temp->next = nullptr;
     return Head;
+}
+
+Node* deleteKelement(Node* Head,int k){
+
+    if(Head==NULL) return NULL;
+    if(k==1){
+        Node* temp = Head;
+        Head = Head->next;
+        delete temp;
+        return Head;
+    }
+
+    int count = 0;
+    Node * Temp = Head;
+   Node* prev = NULL;
+   while(Temp!=NULL){
+       count++;
+       if(count==k){
+           prev->next =  prev->next->next;
+       }
+       prev = Temp;
+       Temp = Temp->next;
+   }
+
+return Head;
+
 }
