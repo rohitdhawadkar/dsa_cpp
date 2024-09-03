@@ -1,46 +1,51 @@
 #include <iostream>
 #include <vector>
-using namespace std;
+#include <cmath>
 
-int find(vector<int> errorScore, int p, int q) {
-    int ans = 0;
-    int score = 0;
+class LinearRegression {
+private:
+    double slope;
+    double intercept;
 
-    for (int i = 0; i < errorScore.size(); i++) {
-        score += errorScore[i];
-    }
+public:
+    LinearRegression() : slope(0), intercept(0) {}
 
-    int zcount = 0;
-    for (int i = 0; i < errorScore.size(); i++) {
-        if (errorScore[i] > 0) {
-            zcount++;
+    void train(const std::vector<double>& x, const std::vector<double>& y) {
+        double x_mean = mean(x);
+        double y_mean = mean(y);
+        double numerator = 0;
+        double denominator = 0;
+
+        for (size_t i = 0; i < x.size(); ++i) {
+            numerator += (x[i] - x_mean) * (y[i] - y_mean);
+            denominator += std::pow((x[i] - x_mean), 2);
         }
+
+        slope = numerator / denominator;
+        intercept = y_mean - (slope * x_mean);
     }
 
-    score -= zcount;
-
-    if (p != 0) {
-        ans = score / p;
-    } else {
-        // Handle division by zero case
-        cout << "Error: Division by zero." << endl;
-        return -1;
+    double predict(double x) const {
+        return slope * x + intercept;
     }
 
-    return ans;
-}
+    double mean(const std::vector<double>& v) const {
+        double sum = 0;
+        for (double val : v) {
+            sum += val;
+        }
+        return sum / v.size();
+    }
+};
 
 int main() {
-    int n, p, q;
+    std::vector<double> x = {1, 2, 3, 4, 5};
+    std::vector<double> y = {2, 4, 5, 4, 5};
 
-    cout << "Enter n, p, q: ";
-    cin >> n >> p >> q;
+    LinearRegression model;
+    model.train(x, y);
 
-    vector<int> nums = {9, 8, 2, 5};
-
-    int ans = find(nums, p, q);
-
-    cout << "The answer is: " << ans << endl;
+    std::cout << "Predicted value for x = 6: " << model.predict(6) << std::endl;
 
     return 0;
 }
